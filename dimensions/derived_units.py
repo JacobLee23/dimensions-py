@@ -75,16 +75,30 @@ class UnitSequence:
         else:
             raise TypeError
 
-    def __floordiv__(self, other):
+    def __rmul__(self, other):
         """
-        :type other: UnitSequence
+        :type other: UnitSequence | int | float
         :rtype: UnitSequence
         :raise TypeError:
         """
-        if not isinstance(other, type(self)):
-            raise TypeError
+        return self * other
 
-        return type(self)(*filter(lambda x: x in other.sequence, self.sequence))
+    def __floordiv__(self, other):
+        """
+        :type other: UnitSequence | int | float
+        :rtype: UnitSequence
+        :raise TypeError:
+        :raise ValueError:
+        """
+        if isinstance(other, type(self)):
+            raise type(self)(*filter(lambda x: x in other.sequence, self.sequence))
+        elif isinstance(other, (int, float)):
+            if other == 1:
+                return type(self)(*self.sequence)
+            else:
+                raise ValueError
+        else:
+            raise TypeError
 
     def __mod__(self, other):
         """
@@ -92,10 +106,15 @@ class UnitSequence:
         :rtype: UnitSequence
         :raise TypeError:
         """
-        if not isinstance(other, type(self)):
+        if isinstance(other, type(self)):
+            return type(self)(*filter(lambda x: x not in other.sequence, self.sequence))
+        elif isinstance(other, (int, float)):
+            if other == 1:
+                return type(self)()
+            else:
+                raise ValueError
+        else:
             raise TypeError
-
-        return type(self)(*filter(lambda x: x not in other.sequence, self.sequence))
 
     @property
     def sequence(self) -> typing.List[BaseUnit]:

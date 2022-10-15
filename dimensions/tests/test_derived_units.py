@@ -150,17 +150,19 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, b, x", [
-            # Multiplication by 0
             (derived_units.UnitSequence(), 0, 0),
             (derived_units.UnitSequence(), 0.0, 0),
-            (0, derived_units.UnitSequence(), None),
-            (0.0, derived_units.UnitSequence(), None),
+            (0, derived_units.UnitSequence(), 0),
+            (0.0, derived_units.UnitSequence(), 0),
 
             (derived_units.UnitSequence(), 1, derived_units.UnitSequence()),
             (derived_units.UnitSequence(), 1.0, derived_units.UnitSequence()),
             (derived_units.UnitSequence(SECOND), 1, derived_units.UnitSequence(SECOND)),
             (derived_units.UnitSequence(SECOND), 1.0, derived_units.UnitSequence(SECOND)),
-            (1, derived_units.UnitSequence(), None),
+            (1, derived_units.UnitSequence(), derived_units.UnitSequence()),
+            (1.0, derived_units.UnitSequence(), derived_units.UnitSequence()),
+            (1, derived_units.UnitSequence(SECOND), derived_units.UnitSequence(SECOND)),
+            (1.0, derived_units.UnitSequence(SECOND), derived_units.UnitSequence(SECOND)),
             (derived_units.UnitSequence(), derived_units.UnitSequence(), derived_units.UnitSequence()),
             (derived_units.UnitSequence(),
              derived_units.UnitSequence(SECOND),
@@ -200,3 +202,49 @@ class TestUnitSequence:
                 assert a * b == b * a == x, (a, b, x)
             else:
                 assert a * b == x, (a, b, x)
+
+    @pytest.mark.parametrize(
+        "a, b, x", [
+
+        ]
+    )
+    def test_floordiv(
+            self,
+            a: typing.Union[derived_units.UnitSequence, int, float],
+            b: typing.Union[derived_units.UnitSequence, int, float],
+            x: typing.Optional[derived_units.UnitSequence]
+    ):
+        """
+
+        :param a:
+        :param b:
+        :param x:
+        """
+        if x is None:
+            with pytest.raises(TypeError):
+                _ = a // b, (a, b, x)
+        else:
+            assert a // b == x, (a, b, x)
+
+    @pytest.mark.parametrize(
+        "a, b, x", [
+
+        ]
+    )
+    def test_mod(
+            self,
+            a: typing.Union[derived_units.UnitSequence, int, float],
+            b: typing.Union[derived_units.UnitSequence, int, float],
+            x: typing.Optional[derived_units.UnitSequence]
+    ):
+        """
+
+        :param a:
+        :param b:
+        :param x:
+        """
+        if x is None:
+            with pytest.raises(TypeError):
+                _ = a % b, (a, b, x)
+        else:
+            assert a % b == x, (a, b, x)
