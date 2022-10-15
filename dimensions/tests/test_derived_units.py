@@ -77,3 +77,23 @@ class TestUnitSequence:
         else:
             assert (a == b) is eq, (a, b, eq)
             assert (a != b) is not eq, (a, b, eq)
+
+    @pytest.mark.parametrize(
+        "a, x", [
+            (derived_units.UnitSequence(), False),
+            (derived_units.UnitSequence(SECOND), True),
+            (derived_units.UnitSequence(METER), True),
+            (derived_units.UnitSequence(GRAM), True),
+            (derived_units.UnitSequence(AMPERE), True),
+            (derived_units.UnitSequence(KELVIN), True),
+            (derived_units.UnitSequence(MOLE), True),
+            (derived_units.UnitSequence(CANDELA), True),
+        ]
+    )
+    def test_bool(self, a: derived_units.UnitSequence, x: bool):
+        """
+
+        :param a:
+        :param x:
+        """
+        assert bool(a) is x, a
