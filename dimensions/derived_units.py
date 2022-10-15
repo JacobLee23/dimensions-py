@@ -49,9 +49,6 @@ class UnitSequence:
     def __getitem__(self, item: int) -> BaseUnit:
         return self.sequence[item]
 
-    def __iter__(self) -> typing.Iterable:
-        return self.sequence
-
     def __contains__(self, item) -> bool:
         return item in self.sequence
 
