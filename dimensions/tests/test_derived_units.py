@@ -68,7 +68,7 @@ class TestUnitSequence:
 
         :param a:
         :param b:
-        :param eq:
+        :param eq: The expected truth value of the expression ``a == b``
         """
         if eq is None:
             with pytest.raises(TypeError):
@@ -94,6 +94,22 @@ class TestUnitSequence:
         """
 
         :param a:
-        :param x:
+        :param x: The expected truth value of ``a``
         """
         assert bool(a) is x, a
+
+    @pytest.mark.parametrize(
+        "a, x", [
+            (derived_units.UnitSequence(), 0),
+            (derived_units.UnitSequence(SECOND), 1),
+            (derived_units.UnitSequence(AMPERE, SECOND), 2),
+            (derived_units.UnitSequence(METER, METER, METER), 3),
+        ]
+    )
+    def test_len(self, a: derived_units.UnitSequence, x: int):
+        """
+
+        :param a:
+        :param x: The expected length of ``a``
+        """
+        assert len(a) == x, a
