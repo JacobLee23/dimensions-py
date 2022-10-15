@@ -44,3 +44,59 @@ class BaseUnit:
         :return:
         """
         return self._name
+
+
+class Second(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("second", "s")
+
+
+class Meter(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("meter", "m")
+
+
+class Ampere(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("ampere", "A")
+
+
+class Gram(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("gram", "g")
+
+
+class Kelvin(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("kelvin", "K")
+
+
+class Mole(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("mole", "mol")
+
+
+class Candela(BaseUnit):
+    """
+
+    """
+    def __init__(self):
+        super().__init__("candela", "cd")
