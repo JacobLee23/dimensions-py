@@ -3,8 +3,8 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "dimensions"
-version = "0.0.3"
+name = "dimensions-py"
+version = "0.0.4"
 description = ""
 readme = "README.md"
 authors = [ { name = "Jacob Lee", email = "Jacob.J.Lee@outlook.com" } ]
@@ -25,7 +25,7 @@ classifiers = [
 requires-python = ">=3.6"
 
 [project.urls]
-homepage = "https://github.com/JacobLee23/Dimensions"
+homepage = "https://github.com/JacobLee23/dimensions-py"
 
 [tool.setuptools.packages.find]
 where = ["."]

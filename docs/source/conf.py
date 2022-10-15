@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Dimensions'
+project = 'dimensions-py'
 copyright = '2022, Jacob Lee'
 author = 'Jacob Lee'
 
