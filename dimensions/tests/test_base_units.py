@@ -19,8 +19,8 @@ class TestBaseUnit:
             # Equality between identical instances
             (base_units.SECOND, base_units.SECOND, True),
             (base_units.METER, base_units.METER, True),
-            (base_units.AMPERE, base_units.AMPERE, True),
             (base_units.GRAM, base_units.GRAM, True),
+            (base_units.AMPERE, base_units.AMPERE, True),
             (base_units.KELVIN, base_units.KELVIN, True),
             (base_units.MOLE, base_units.MOLE, True),
             (base_units.CANDELA, base_units.CANDELA, True),
@@ -28,8 +28,8 @@ class TestBaseUnit:
             # Equality between non-identical instances
             (base_units.Second(), base_units.Second(), True),
             (base_units.Meter(), base_units.Meter(), True),
-            (base_units.Ampere(), base_units.Ampere(), True),
             (base_units.Gram(), base_units.Gram(), True),
+            (base_units.Ampere(), base_units.Ampere(), True),
             (base_units.Kelvin(), base_units.Kelvin(), True),
             (base_units.Mole(), base_units.Mole(), True),
             (base_units.Candela(), base_units.Candela(), True),
@@ -46,8 +46,8 @@ class TestBaseUnit:
             # Invalid comparison between differing types
             (base_units.SECOND, True, None),
             (base_units.METER, 0, None),
-            (base_units.AMPERE, 0.0, None),
-            (base_units.GRAM, "", None),
+            (base_units.GRAM, 0.0, None),
+            (base_units.AMPERE, "", None),
             (base_units.KELVIN, [], None),
             (base_units.MOLE, (), None),
             (base_units.CANDELA, {}, None),

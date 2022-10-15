@@ -1,5 +1,21 @@
 """
+Definitions for representations of the 7 SI base units (`Wikipedia`_).
 
+.. _Wikipedia: https://en.wikipedia.org/wiki/SI_base_unit
+
+.. py:data:: SECOND
+
+.. py:data:: METER
+
+.. py:data:: GRAM
+
+.. py:data:: AMPERE
+
+.. py:data:: KELVIN
+
+.. py:data:: MOLE
+
+.. py:data:: CANDELA
 """
 
 
@@ -8,6 +24,10 @@ class BaseUnit:
 
     """
     def __init__(self, name: str, abbr: str):
+        """
+        :param name: The SI name of the unit
+        :param abbr: The SI abbreviation for the unit
+        """
         self._name = name
         self._abbr = abbr
 
@@ -19,10 +39,8 @@ class BaseUnit:
 
     def __eq__(self, other) -> bool:
         """
-
-        :param other:
         :type other: BaseUnit
-        :return:
+        :raise TypeError:
         """
         if not issubclass(type(other), BaseUnit):
             raise TypeError
@@ -32,16 +50,14 @@ class BaseUnit:
     @property
     def abbr(self) -> str:
         """
-
-        :return:
+        :return: The SI abbreviation for the unit
         """
         return self._abbr
 
     @property
     def name(self) -> str:
         """
-
-        :return:
+        :return: The SI name of the unit
         """
         return self._name
 
@@ -104,8 +120,8 @@ class Candela(BaseUnit):
 
 SECOND = Second()
 METER = Meter()
-AMPERE = Ampere()
 GRAM = Gram()
+AMPERE = Ampere()
 KELVIN = Kelvin()
 MOLE = Mole()
 CANDELA = Candela()
