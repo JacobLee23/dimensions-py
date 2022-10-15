@@ -100,3 +100,12 @@ class Candela(BaseUnit):
     """
     def __init__(self):
         super().__init__("candela", "cd")
+
+
+SECOND = Second()
+METER = Meter()
+AMPERE = Ampere()
+GRAM = Gram()
+KELVIN = Kelvin()
+MOLE = Mole()
+CANDELA = Candela()
