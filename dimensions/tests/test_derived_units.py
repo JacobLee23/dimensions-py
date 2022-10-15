@@ -248,3 +248,26 @@ class TestUnitSequence:
                 _ = a % b, (a, b, x)
         else:
             assert a % b == x, (a, b, x)
+
+    @pytest.mark.parametrize(
+        "a, n, x", [
+            
+        ]
+    )
+    def test_pow(
+            self,
+            a: derived_units.UnitSequence,
+            n: int,
+            x: typing.Optional[derived_units.UnitSequence]
+    ):
+        """
+
+        :param a:
+        :param n:
+        :param x:
+        """
+        if x is None:
+            with pytest.raises(TypeError):
+                _ = a ** n, (a, n, x)
+        else:
+            assert a ** n == x, (a, n, x)

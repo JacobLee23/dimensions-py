@@ -116,6 +116,17 @@ class UnitSequence:
         else:
             raise TypeError
 
+    def __pow__(self, power, modulo=None):
+        """
+        :type power: int
+        :param modulo:
+        :rtype: UnitSequence
+        """
+        if not isinstance(power, int):
+            raise TypeError
+
+        return type(self)(*(self.sequence * power))
+
     @property
     def sequence(self) -> typing.List[BaseUnit]:
         """
