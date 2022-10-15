@@ -18,7 +18,11 @@ class TestUnitSequence:
     """
     @pytest.mark.parametrize(
         "a, b, eq", [
-            # Multiplicative identity
+            (derived_units.UnitSequence(), 1, True),
+            (derived_units.UnitSequence(), 1.0, True),
+            (1, derived_units.UnitSequence(), True),
+            (1.0, derived_units.UnitSequence(), True),
+
             (derived_units.UnitSequence(SECOND),
              derived_units.UnitSequence(SECOND),
              True),
@@ -41,7 +45,6 @@ class TestUnitSequence:
              derived_units.UnitSequence(CANDELA),
              True),
 
-            # Multiplicative commutativity
             (derived_units.UnitSequence(METER, METER),
              derived_units.UnitSequence(METER, METER),
              True),
@@ -52,7 +55,6 @@ class TestUnitSequence:
              (derived_units.UnitSequence(AMPERE, SECOND)),
              True),
 
-            # Multiplicative associativity
             (derived_units.UnitSequence(METER, derived_units.UnitSequence(METER, METER)),
              derived_units.UnitSequence(derived_units.UnitSequence(METER, METER), METER),
              True)
@@ -71,9 +73,9 @@ class TestUnitSequence:
         :param eq: The expected truth value of the expression ``a == b``
         """
         if eq is None:
-            with pytest.raises(TypeError):
-                assert a == b
-                assert a != b
+            with pytest.raises(ValueError):
+                _ = a == b
+                _ = a != b
         else:
             assert (a == b) is eq, (a, b, eq)
             assert (a != b) is not eq, (a, b, eq)
@@ -145,3 +147,56 @@ class TestUnitSequence:
         """
         for v in a:
             assert v in a, (a, v)
+
+    @pytest.mark.parametrize(
+        "a, b, x", [
+            # Multiplication by 0
+            (derived_units.UnitSequence(), 0, 0),
+            (derived_units.UnitSequence(), 0.0, 0),
+            (0, derived_units.UnitSequence(), None),
+            (0.0, derived_units.UnitSequence(), None),
+
+            (derived_units.UnitSequence(), 1, derived_units.UnitSequence()),
+            (derived_units.UnitSequence(), 1.0, derived_units.UnitSequence()),
+            (derived_units.UnitSequence(SECOND), 1, derived_units.UnitSequence(SECOND)),
+            (derived_units.UnitSequence(SECOND), 1.0, derived_units.UnitSequence(SECOND)),
+            (1, derived_units.UnitSequence(), None),
+            (derived_units.UnitSequence(), derived_units.UnitSequence(), derived_units.UnitSequence()),
+            (derived_units.UnitSequence(),
+             derived_units.UnitSequence(SECOND),
+             derived_units.UnitSequence(SECOND)),
+            (derived_units.UnitSequence(SECOND),
+             derived_units.UnitSequence(),
+             derived_units.UnitSequence(SECOND)),
+
+            (derived_units.UnitSequence(METER),
+             derived_units.UnitSequence(METER),
+             derived_units.UnitSequence(METER, METER)),
+            (derived_units.UnitSequence(AMPERE),
+             derived_units.UnitSequence(SECOND),
+             derived_units.UnitSequence(AMPERE, SECOND)),
+            (derived_units.UnitSequence(AMPERE),
+             derived_units.UnitSequence(SECOND),
+             derived_units.UnitSequence(SECOND, AMPERE)),
+        ]
+    )
+    def test_mul(
+            self,
+            a: typing.Union[derived_units.UnitSequence, int, float],
+            b: typing.Union[derived_units.UnitSequence, int, float],
+            x: typing.Optional[derived_units.UnitSequence]
+    ):
+        """
+
+        :param a:
+        :param b:
+        :param x:
+        """
+        if x is None:
+            with pytest.raises(TypeError):
+                _ = a * b, (a, b, x)
+        else:
+            if isinstance(b, derived_units.UnitSequence):
+                assert a * b == b * a == x, (a, b, x)
+            else:
+                assert a * b == x, (a, b, x)

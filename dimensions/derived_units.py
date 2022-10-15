@@ -28,17 +28,22 @@ class UnitSequence:
         self._sequence = sorted(args, key=str)
 
     def __repr__(self) -> str:
-        return f"{type(self).__name__}({self.sequence}"
+        return f"{type(self).__name__}({self.sequence})"
 
     def __eq__(self, other) -> bool:
         """
         :type other: UnitSequence
         :raise TypeError:
         """
-        if not isinstance(other, type(self)):
+        if isinstance(other, type(self)):
+            return self.sequence == other.sequence
+        elif isinstance(other, (int, float)):
+            if other == 1:
+                return self.sequence == []
+            else:
+                raise ValueError
+        else:
             raise TypeError
-
-        return self.sequence == other.sequence
 
     def __bool__(self) -> bool:
         return bool(self.sequence)
@@ -62,7 +67,9 @@ class UnitSequence:
             return type(self)(*self.sequence, *other.sequence)
         elif isinstance(other, (int, float)):
             if other == 0:
-                return type(self)()
+                return 0
+            elif other == 1:
+                return type(self)(*self.sequence)
             else:
                 raise ValueError
         else:
