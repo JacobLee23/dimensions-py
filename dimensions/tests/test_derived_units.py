@@ -126,7 +126,22 @@ class TestUnitSequence:
         """
 
         :param a:
-        :return:
         """
-        for i in range(len(a)):
-            assert a[i], (a, i)
+        for i, v in enumerate(a):
+            assert a[i] == v, (a, i, v)
+
+    @pytest.mark.parametrize(
+        "a", [
+            derived_units.UnitSequence(),
+            derived_units.UnitSequence(SECOND),
+            derived_units.UnitSequence(AMPERE, SECOND),
+            derived_units.UnitSequence(METER, METER, METER),
+        ]
+    )
+    def test_contains(self, a: derived_units.UnitSequence):
+        """
+
+        :param a:
+        """
+        for v in a:
+            assert v in a, (a, v)
