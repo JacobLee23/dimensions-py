@@ -125,7 +125,12 @@ class UnitSequence:
         if not isinstance(power, int):
             raise TypeError
 
-        return type(self)(*(self.sequence * power))
+        if power < 0:
+            raise ValueError
+        elif power == 0:
+            return type(self)()
+        else:
+            return type(self)(*(self.sequence * power))
 
     @property
     def sequence(self) -> typing.List[BaseUnit]:

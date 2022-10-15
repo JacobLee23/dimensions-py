@@ -251,7 +251,17 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, n, x", [
-            
+            (derived_units.UnitSequence(), -1, None),
+            (derived_units.UnitSequence(), 0, derived_units.UnitSequence()),
+            (derived_units.UnitSequence(), 1, derived_units.UnitSequence()),
+            (derived_units.UnitSequence(), 2, derived_units.UnitSequence()),
+
+            (derived_units.UnitSequence(METER), 0, derived_units.UnitSequence()),
+            (derived_units.UnitSequence(METER), 1, derived_units.UnitSequence(METER)),
+            (derived_units.UnitSequence(METER), 2, derived_units.UnitSequence(METER, METER)),
+            (derived_units.UnitSequence(METER),
+             3,
+             derived_units.UnitSequence(METER, METER, METER)),
         ]
     )
     def test_pow(
@@ -267,7 +277,11 @@ class TestUnitSequence:
         :param x:
         """
         if x is None:
-            with pytest.raises(TypeError):
-                _ = a ** n, (a, n, x)
+            if isinstance(n, int) and n < 0:
+                with pytest.raises(ValueError):
+                    _ = a ** n, (a, n, x)
+            else:
+                with pytest.raises(TypeError):
+                    _ = a ** n, (a, n, x)
         else:
             assert a ** n == x, (a, n, x)
