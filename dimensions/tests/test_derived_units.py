@@ -113,3 +113,20 @@ class TestUnitSequence:
         :param x: The expected length of ``a``
         """
         assert len(a) == x, a
+
+    @pytest.mark.parametrize(
+        "a", [
+            derived_units.UnitSequence(),
+            derived_units.UnitSequence(SECOND),
+            derived_units.UnitSequence(AMPERE, SECOND),
+            derived_units.UnitSequence(METER, METER, METER),
+        ]
+    )
+    def test_getitem(self, a: derived_units.UnitSequence):
+        """
+
+        :param a:
+        :return:
+        """
+        for i in range(len(a)):
+            assert a[i], (a, i)
