@@ -6,6 +6,7 @@ import re
 import typing
 
 from .base_units import BaseUnit
+from .base_units import (SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA)
 
 
 class UnitSequence:
@@ -194,22 +195,37 @@ class Unit:
     """
 
     """
-    def __init__(
-            self,
-            numer: typing.Union[list[BaseUnit], UnitSequence],
-            denom: typing.Union[list[BaseUnit], UnitSequence],
-            name: str = "",
-            abbr: str = ""
-    ):
+    def __init__(self, numer, denom, name: str = "", abbr: str = ""):
         """
 
         :param numer:
+        :type numer: list[BaseUnit] | UnitSequence | list[Unit]
         :param denom:
+        :type denom: list[BaseUnit] | UnitSequence | list[Unit]
         :param name:
         :param abbr:
         """
-        numer, denom = UnitSequence(*numer), UnitSequence(*denom)
-        self._numer, self._denom = numer % denom, denom % numer
+        unitsn, unitsd = [], []
+        for unit in numer:
+            if isinstance(unit, BaseUnit):
+                unitsn.append(unit)
+            elif isinstance(unit, Unit):
+                unitsn.extend(unit.numerator)
+                unitsd.extend(unit.denominator)
+            else:
+                raise TypeError
+        for unit in denom:
+            if isinstance(unit, BaseUnit):
+                unitsd.append(unit)
+            elif isinstance(unit, Unit):
+                unitsd.extend(unit.numerator)
+                unitsn.extend(unit.denominator)
+            else:
+                raise TypeError
+        numerator, denominator = UnitSequence(*unitsn), UnitSequence(*unitsd)
+
+        self._numer = numerator % denominator
+        self._denom = denominator % numerator
 
         self._name = name
         self._abbr = abbr
@@ -363,3 +379,27 @@ class Unit:
             numerator = " * ".join(f"{k}^{{{v}}}" for k, v in countn.values())
             denominator = " * ".join(f"{k}^{{{-v}}}" for k, v in countd.values())
             return fr"${numerator} * {denominator}$"
+
+
+HERTZ = Unit([], [SECOND], "Hertz", "Hz")
+RADIAN = Unit([METER], [METER], "radian", "rad")
+STERADIAN = Unit([METER, METER], [METER, METER], "steradian", "sr")
+NEWTON = Unit([GRAM, METER], [SECOND, SECOND], "newton", "N")       # TODO: g -> kg
+PASCAL = Unit([NEWTON], [METER, METER], "pascal", "Pa")
+JOULE = Unit([METER, NEWTON], [], "joule", "J")
+WATT = Unit([JOULE], [SECOND], "watt", "W")
+COULOMB = Unit([SECOND, AMPERE], [], "coulomb", "C")
+VOLT = Unit([WATT], [AMPERE], "volt", "V")
+FARAD = Unit([COULOMB], [VOLT], "farad", "F")
+OHM = Unit([VOLT], [AMPERE], "ohm", "Ω")
+SIEMENS = Unit([], [OHM], "siemens", "S")
+WEBER = Unit([JOULE], [AMPERE], "weber", "Wb")
+TESLA = Unit([VOLT, SECOND], [METER, METER], "tesla", "T")
+HENRY = Unit([VOLT, SECOND], [AMPERE], "henry", "H")
+CELSIUS = Unit([KELVIN], [], "celsius", "°C")
+LUMEN = Unit([CANDELA, STERADIAN], [], "lumen", "lm")
+LUX = Unit([LUMEN], [METER, METER], "lux", "lx")
+BECQUEREL = Unit([], [SECOND], "becquerel", "Bq")
+GRAY = Unit([JOULE], [GRAM], "gray", "Gy")      # TODO: g -> kg
+SIEVERT = Unit([JOULE], [GRAM], "sievert", "Sv")        # TODO: g -> kg
+KATAL = Unit([MOLE], [SECOND], "katal", "kat")

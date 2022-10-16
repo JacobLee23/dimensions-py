@@ -62,66 +62,10 @@ class BaseUnit:
         return self._name
 
 
-class Second(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("second", "s")
-
-
-class Meter(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("meter", "m")
-
-
-class Ampere(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("ampere", "A")
-
-
-class Gram(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("gram", "g")
-
-
-class Kelvin(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("kelvin", "K")
-
-
-class Mole(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("mole", "mol")
-
-
-class Candela(BaseUnit):
-    """
-
-    """
-    def __init__(self):
-        super().__init__("candela", "cd")
-
-
-SECOND = Second()
-METER = Meter()
-GRAM = Gram()
-AMPERE = Ampere()
-KELVIN = Kelvin()
-MOLE = Mole()
-CANDELA = Candela()
+SECOND = BaseUnit("second", "s")
+METER = BaseUnit("meter", "m")
+GRAM = BaseUnit("gram", "g")
+AMPERE = BaseUnit("ampere", "A")
+KELVIN = BaseUnit("kelvin", "K")
+MOLE = BaseUnit("mole", "mol")
+CANDELA = BaseUnit("candela", "cd")
