@@ -7,6 +7,9 @@ import typing
 import pytest
 
 from dimensions import base_units
+from dimensions.base_units import (
+    SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA
+)
 
 
 class TestBaseUnit:
@@ -17,13 +20,13 @@ class TestBaseUnit:
     @pytest.mark.parametrize(
         "a, b, eq", [
             # Equality between identical instances
-            (base_units.SECOND, base_units.SECOND, True),
-            (base_units.METER, base_units.METER, True),
-            (base_units.GRAM, base_units.GRAM, True),
-            (base_units.AMPERE, base_units.AMPERE, True),
-            (base_units.KELVIN, base_units.KELVIN, True),
-            (base_units.MOLE, base_units.MOLE, True),
-            (base_units.CANDELA, base_units.CANDELA, True),
+            (SECOND, SECOND, True),
+            (METER, METER, True),
+            (GRAM, GRAM, True),
+            (AMPERE, AMPERE, True),
+            (KELVIN, KELVIN, True),
+            (MOLE, MOLE, True),
+            (CANDELA, CANDELA, True),
 
             # Equality between non-identical instances
             (base_units.Second(), base_units.Second(), True),
@@ -35,30 +38,25 @@ class TestBaseUnit:
             (base_units.Candela(), base_units.Candela(), True),
 
             # Inequality between identical (inherited) types
-            (base_units.SECOND, base_units.METER, False),
-            (base_units.METER, base_units.GRAM, False),
-            (base_units.GRAM, base_units.AMPERE, False),
-            (base_units.AMPERE, base_units.KELVIN, False),
-            (base_units.KELVIN, base_units.MOLE, False),
-            (base_units.MOLE, base_units.CANDELA, False),
-            (base_units.CANDELA, base_units.SECOND, False),
+            (SECOND, METER, False),
+            (METER, GRAM, False),
+            (GRAM, AMPERE, False),
+            (AMPERE, KELVIN, False),
+            (KELVIN, MOLE, False),
+            (MOLE, CANDELA, False),
+            (CANDELA, SECOND, False),
 
             # Invalid comparison between differing types
-            (base_units.SECOND, True, None),
-            (base_units.METER, 0, None),
-            (base_units.GRAM, 0.0, None),
-            (base_units.AMPERE, "", None),
-            (base_units.KELVIN, [], None),
-            (base_units.MOLE, (), None),
-            (base_units.CANDELA, {}, None),
+            (SECOND, True, None),
+            (METER, 0, None),
+            (GRAM, 0.0, None),
+            (AMPERE, "", None),
+            (KELVIN, [], None),
+            (MOLE, (), None),
+            (CANDELA, {}, None),
         ]
     )
-    def test_eq(
-            self,
-            a: base_units.BaseUnit,
-            b: base_units.BaseUnit,
-            eq: typing.Optional[bool]
-    ):
+    def test_eq(self, a: base_units.BaseUnit, b: base_units.BaseUnit, eq: typing.Optional[bool]):
         """
 
         :param a:

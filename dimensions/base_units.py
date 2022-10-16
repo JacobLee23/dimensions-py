@@ -61,11 +61,30 @@ class BaseUnit:
         """
         return self._name
 
+    @classmethod
+    def factory(cls, name: str, *args, **kwargs):
+        """
 
-SECOND = BaseUnit("second", "s")
-METER = BaseUnit("meter", "m")
-GRAM = BaseUnit("gram", "g")
-AMPERE = BaseUnit("ampere", "A")
-KELVIN = BaseUnit("kelvin", "K")
-MOLE = BaseUnit("mole", "mol")
-CANDELA = BaseUnit("candela", "cd")
+        :return:
+        """
+        def __init__(self):
+            cls.__init__(self, *args, **kwargs)
+
+        return type(name, (cls,), {"__init__": __init__})
+
+
+Second = BaseUnit.factory("Second", "second", "s")
+Meter = BaseUnit.factory("Meter", "meter", "m")
+Gram = BaseUnit.factory("Gram", "gram", "g")
+Ampere = BaseUnit.factory("Ampere", "ampere", "A")
+Kelvin = BaseUnit.factory("Kelvin", "kelvin", "K")
+Mole = BaseUnit.factory("Mole", "mole", "mol")
+Candela = BaseUnit.factory("Candela", "candela", "cd")
+
+SECOND = Second()
+METER = Meter()
+GRAM = Gram()
+AMPERE = Ampere()
+KELVIN = Kelvin()
+MOLE = Mole()
+CANDELA = Candela()
