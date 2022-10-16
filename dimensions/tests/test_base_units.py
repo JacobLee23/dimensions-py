@@ -6,7 +6,7 @@ import typing
 
 import pytest
 
-from dimensions import base_units
+from dimensions import base_units as bu
 from dimensions.base_units import (
     SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA
 )
@@ -29,13 +29,13 @@ class TestBaseUnit:
             (CANDELA, CANDELA, True),
 
             # Equality between non-identical instances
-            (base_units.Second(), base_units.Second(), True),
-            (base_units.Meter(), base_units.Meter(), True),
-            (base_units.Gram(), base_units.Gram(), True),
-            (base_units.Ampere(), base_units.Ampere(), True),
-            (base_units.Kelvin(), base_units.Kelvin(), True),
-            (base_units.Mole(), base_units.Mole(), True),
-            (base_units.Candela(), base_units.Candela(), True),
+            (bu.Second(), bu.Second(), True),
+            (bu.Meter(), bu.Meter(), True),
+            (bu.Gram(), bu.Gram(), True),
+            (bu.Ampere(), bu.Ampere(), True),
+            (bu.Kelvin(), bu.Kelvin(), True),
+            (bu.Mole(), bu.Mole(), True),
+            (bu.Candela(), bu.Candela(), True),
 
             # Inequality between identical (inherited) types
             (SECOND, METER, False),
@@ -56,7 +56,7 @@ class TestBaseUnit:
             (CANDELA, {}, None),
         ]
     )
-    def test_eq(self, a: base_units.BaseUnit, b: base_units.BaseUnit, eq: typing.Optional[bool]):
+    def test_eq(self, a: bu.BaseUnit, b: bu.BaseUnit, eq: typing.Optional[bool]):
         """
 
         :param a:

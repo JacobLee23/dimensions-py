@@ -9,7 +9,7 @@ import pytest
 from dimensions.base_units import (
     SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA
 )
-from dimensions import derived_units
+from dimensions import derived_units as du
 from dimensions.derived_units import Unit
 from dimensions.derived_units import UnitSequence
 
