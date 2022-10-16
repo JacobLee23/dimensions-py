@@ -2,6 +2,7 @@
 
 """
 
+import re
 import typing
 
 from .base_units import BaseUnit
@@ -166,10 +167,8 @@ class UnitSequence:
         else:
             raise TypeError
 
-    def __pow__(self, power, modulo=None):
+    def __pow__(self, power: int, modulo: typing.Optional[int] = None):
         """
-        :type power: int
-        :param modulo:
         :rtype: UnitSequence
         """
         if not isinstance(power, int):
@@ -189,3 +188,178 @@ class UnitSequence:
         :return:
         """
         return self._sequence
+
+
+class Unit:
+    """
+
+    """
+    def __init__(
+            self,
+            numer: typing.Union[list[BaseUnit], UnitSequence],
+            denom: typing.Union[list[BaseUnit], UnitSequence],
+            name: str = "",
+            abbr: str = ""
+    ):
+        """
+
+        :param numer:
+        :param denom:
+        :param name:
+        :param abbr:
+        """
+        numer, denom = UnitSequence(*numer), UnitSequence(*denom)
+        self._numer, self._denom = numer % denom, denom % numer
+
+        self._name = name
+        self._abbr = abbr
+
+    def __repr__(self) -> str:
+        args = (
+            f"numerator={self.numerator}",
+            f"denominator={self.denominator}",
+            f"name={self.name}",
+            f"abbr={self.abbr}"
+        )
+        return f"{type(self).__name__}({', '.join(args)})"
+
+    def __str__(self) -> str:
+        return self.abbr
+
+    def __eq__(self, other) -> bool:
+        """
+
+        :param other:
+        :return:
+        """
+        if not isinstance(other, Unit):
+            raise TypeError
+
+        return (self.numerator == other.numerator) and (self.denominator == other.denominator)
+
+    def __bool__(self) -> bool:
+        return bool(self.numerator) and bool(self.denominator)
+
+    def __len__(self) -> typing.Tuple[int, int]:
+        return len(self.numerator), len(self.denominator)
+
+    def __getitem__(self, item) -> UnitSequence:
+        """
+        :type item:
+        :raise TypeError:
+        :raise ValueError:
+        """
+        if not isinstance(item, (int, str)):
+            raise TypeError
+
+        if item == 0 or re.search(r"n(umer(ator)?)?", item, re.IGNORECASE):
+            return self.numerator
+        elif item == 1 or re.search(r"d(enom(inator)?)?", item, re.IGNORECASE):
+            return self.denominator
+        else:
+            raise ValueError
+
+    def __contains__(self, item: typing.Any) -> bool:
+        return item in self.numerator or item in self.denominator
+
+    def __mul__(self, other):
+        """
+        :param other:
+        :rtype: Unit
+        :raise TypeError:
+        """
+        if not isinstance(other, Unit):
+            raise TypeError
+
+        numerator = self.numerator * other.numerator
+        denominator = self.denominator * other.denominator
+
+        return type(self)(
+            numerator % denominator, denominator % numerator
+        )
+
+    def __truediv__(self, other):
+        """
+        :param other:
+        :rtype: Unit
+        :raise TypeError:
+        """
+        if not isinstance(other, Unit):
+            raise TypeError
+
+        numerator = self.numerator * other.denominator
+        denominator = self.denominator * other.numerator
+
+        return type(self)(
+            numerator % denominator, denominator % numerator
+        )
+
+    def __pow__(self, power: int, modulo: typing.Optional[int] = None):
+        """
+        :rtype: Unit
+        """
+        if not isinstance(power, int):
+            raise ValueError
+
+        if power < 0:
+            return type(self)(self.denominator ** abs(power), self.numerator ** abs(power))
+        elif power == 0:
+            return type(self)([], [])
+        else:
+            return type(self)(self.numerator ** power, self.denominator ** power)
+
+    @property
+    def numerator(self) -> UnitSequence:
+        """
+
+        :return:
+        """
+        return self._numer
+
+    @property
+    def denominator(self) -> UnitSequence:
+        """
+
+        :return:
+        """
+        return self._denom
+
+    @property
+    def name(self) -> str:
+        """
+
+        :return:
+        """
+        return self._name
+
+    @property
+    def abbr(self) -> str:
+        """
+
+        :return:
+        """
+        return self._abbr
+
+    @property
+    def si_bu_equivalent(self) -> str:
+        """
+
+        :return:
+        """
+        return f"{' * '.join(self.numerator)} / {' * '.join(self.denominator)}"
+
+    def si_bu_latex(self, *, fraction=False) -> str:
+        """
+
+        :return:
+        """
+        countn = {x: list(self.numerator).count(x) for x in set(self.numerator)}
+        countd = {x: list(self.denominator).count(x) for x in set(self.denominator)}
+        if fraction:
+            numerator = " * ".join(f"{k}^{{{v}}}" for k, v in countn.values())
+            denominator = " * ".join(f"{k}^{{{v}}}" for k, v in countd.values())
+            return fr"$\frac{{{numerator}}}{{{denominator}}}$"
+        else:
+            numerator = " * ".join(f"{k}^{{{v}}}" for k, v in countn.values())
+            denominator = " * ".join(f"{k}^{{{-v}}}" for k, v in countd.values())
+            return fr"${numerator} * {denominator}$"
