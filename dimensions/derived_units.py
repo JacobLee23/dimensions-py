@@ -85,50 +85,7 @@ class UnitSequence:
         """
         return self * other
 
-    def __floordiv__(self, other):
-        """
-        :type other: UnitSequence | int | float
-        :rtype: UnitSequence
-        :raise TypeError:
-        :raise ValueError:
-        """
-        if isinstance(other, type(self)):
-            seqa, seqb = self.sequence.copy(), other.sequence.copy()
-            sequence = []
-            for i, unita in enumerate(seqa):
-                for j, unitb in enumerate(seqb):
-                    if unita == unitb:
-                        sequence.append(unita)
-                        del seqa[i], seqb[j]
-            return type(self)(*sequence)
-        elif isinstance(other, (int, float)):
-            if other == 1:
-                return type(self)()
-            else:
-                raise ValueError
-        else:
-            raise TypeError
-
-    def __rfloordiv__(self, other):
-        """
-        :type other: UnitSequence | int | float
-        :rtype: UnitSequence
-        :raise TypeError:
-        :raise ValueError:
-        """
-        if isinstance(other, type(self)):
-            return other // self
-        elif isinstance(other, (int, float)):
-            if other == 0:
-                return 0
-            elif other == 1:
-                return type(self)()
-            else:
-                raise ValueError
-        else:
-            raise TypeError
-
-    def __mod__(self, other):
+    def __truediv__(self, other):
         """
         :type other: UnitSequence
         :rtype: UnitSequence
@@ -150,14 +107,14 @@ class UnitSequence:
         else:
             raise TypeError
 
-    def __rmod__(self, other):
+    def __rtruediv__(self, other):
         """
         :type other: UnitSequence
         :rtype: UnitSequence
         :raise TypeError:
         """
         if isinstance(other, type(self)):
-            return other % self
+            return other / self
         elif isinstance(other, (int, float)):
             if other == 0:
                 return 0
@@ -224,8 +181,8 @@ class Unit:
                 raise TypeError
         numerator, denominator = UnitSequence(*unitsn), UnitSequence(*unitsd)
 
-        self._numer = numerator % denominator
-        self._denom = denominator % numerator
+        self._numer = numerator / denominator
+        self._denom = denominator / numerator
 
         self._name = name
         self._abbr = abbr
@@ -291,7 +248,7 @@ class Unit:
         denominator = self.denominator * other.denominator
 
         return type(self)(
-            numerator % denominator, denominator % numerator
+            numerator / denominator, denominator / numerator
         )
 
     def __truediv__(self, other):
@@ -307,7 +264,7 @@ class Unit:
         denominator = self.denominator * other.numerator
 
         return type(self)(
-            numerator % denominator, denominator % numerator
+            numerator / denominator, denominator / numerator
         )
 
     def __pow__(self, power: int, modulo: typing.Optional[int] = None):
@@ -380,26 +337,38 @@ class Unit:
             denominator = " * ".join(f"{k}^{{{-v}}}" for k, v in countd.values())
             return fr"${numerator} * {denominator}$"
 
+    @classmethod
+    def factory(cls, name: str, *args, **kwargs):
+        """
 
-HERTZ = Unit([], [SECOND], "Hertz", "Hz")
-RADIAN = Unit([METER], [METER], "radian", "rad")
-STERADIAN = Unit([METER, METER], [METER, METER], "steradian", "sr")
-NEWTON = Unit([GRAM, METER], [SECOND, SECOND], "newton", "N")       # TODO: g -> kg
-PASCAL = Unit([NEWTON], [METER, METER], "pascal", "Pa")
-JOULE = Unit([METER, NEWTON], [], "joule", "J")
-WATT = Unit([JOULE], [SECOND], "watt", "W")
-COULOMB = Unit([SECOND, AMPERE], [], "coulomb", "C")
-VOLT = Unit([WATT], [AMPERE], "volt", "V")
-FARAD = Unit([COULOMB], [VOLT], "farad", "F")
-OHM = Unit([VOLT], [AMPERE], "ohm", "Ω")
-SIEMENS = Unit([], [OHM], "siemens", "S")
-WEBER = Unit([JOULE], [AMPERE], "weber", "Wb")
-TESLA = Unit([VOLT, SECOND], [METER, METER], "tesla", "T")
-HENRY = Unit([VOLT, SECOND], [AMPERE], "henry", "H")
-CELSIUS = Unit([KELVIN], [], "celsius", "°C")
-LUMEN = Unit([CANDELA, STERADIAN], [], "lumen", "lm")
-LUX = Unit([LUMEN], [METER, METER], "lux", "lx")
-BECQUEREL = Unit([], [SECOND], "becquerel", "Bq")
-GRAY = Unit([JOULE], [GRAM], "gray", "Gy")      # TODO: g -> kg
-SIEVERT = Unit([JOULE], [GRAM], "sievert", "Sv")        # TODO: g -> kg
-KATAL = Unit([MOLE], [SECOND], "katal", "kat")
+        :return:
+        """
+
+        def __init__(self):
+            cls.__init__(self, *args, **kwargs)
+
+        return type(name, (cls,), {"__init__": __init__})
+
+
+Hertz = Unit.factory("Hertz", [], [SECOND], "Hertz", "Hz")
+Radian = Unit.factory("Radian", [METER], [METER], "radian", "rad")
+Steradian = Unit.factory("Steradian", [METER, METER], [METER, METER], "steradian", "sr")
+Newton = Unit.factory("Newton", [GRAM, METER], [SECOND, SECOND], "newton", "N")     # TODO: g -> kg
+Pascal = Unit.factory("Newton", [Newton()], [METER, METER], "pascal", "Pa")
+Joule = Unit.factory("Joule", [METER, Newton()], [], "joule", "J")
+Watt = Unit.factory("Watt", [Joule()], [SECOND], "watt", "W")
+Coulomb = Unit.factory("Coulomb", [SECOND, AMPERE], [], "coulomb", "C")
+Volt = Unit.factory("Volt", [Watt()], [AMPERE], "volt", "V")
+Farad = Unit.factory("Farad", [Coulomb()], [Volt()], "farad", "F")
+Ohm = Unit.factory("Ohm", [Volt()], [AMPERE], "ohm", "Ω")
+Siemens = Unit.factory("Siemens", [], [Ohm()], "siemens", "S")
+Weber = Unit.factory("Weber", [Joule()], [AMPERE], "weber", "Wb")
+Tesla = Unit.factory("Tesla", [Volt(), SECOND], [METER, METER], "tesla", "T")
+Henry = Unit.factory("Henry", [Volt(), SECOND], [AMPERE], "henry", "H")
+Celsius = Unit.factory("Celsius", [KELVIN], [], "celsius", "°C")
+Lumen = Unit.factory("Lumen", [CANDELA, Steradian()], [], "lumen", "lm")
+Lux = Unit.factory("Lux", [Lumen()], [METER, METER], "lux", "lx")
+Becquerel = Unit.factory("Becquerel", [], [SECOND], "becquerel", "Bq")
+Gray = Unit.factory("Gray", [Joule()], [GRAM], "gray", "Gy")        # TODO: g -> kg
+Sievert = Unit.factory("Sievert", [Joule()], [GRAM], "sievert", "Sv")       # TODO: g -> kg
+Katal = Unit.factory("Katal", [MOLE], [SECOND], "katal", "kat")

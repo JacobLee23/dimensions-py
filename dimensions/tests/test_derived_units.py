@@ -10,6 +10,7 @@ from dimensions.base_units import (
     SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA
 )
 from dimensions import derived_units
+from dimensions.derived_units import Unit
 from dimensions.derived_units import UnitSequence
 
 
@@ -18,7 +19,7 @@ class TestUnitSequence:
     Unit tests for :py:class:`UnitSequence`.
     """
     @pytest.mark.parametrize(
-        "a, b, eq", [
+        "a, b, x", [
             (UnitSequence(), 1, True),
             (UnitSequence(), 1.0, True),
             (1, UnitSequence(), True),
@@ -45,21 +46,21 @@ class TestUnitSequence:
             self,
             a: typing.Union[UnitSequence, int, float],
             b: typing.Union[UnitSequence, int, float],
-            eq: typing.Optional[bool]
+            x: typing.Optional[bool]
     ):
         """
 
         :param a:
         :param b:
-        :param eq: The expected truth value of the expression ``a == b``
+        :param x: The expected truth value of the expression ``a == b``
         """
-        if eq is None:
+        if x is None:
             with pytest.raises(ValueError):
                 _ = a == b
                 _ = a != b
         else:
-            assert (a == b) is eq, (a, b, eq)
-            assert (a != b) is not eq, (a, b, eq)
+            assert (a == b) is x, (a, b, x)
+            assert (a != b) is not x, (a, b, x)
 
     @pytest.mark.parametrize(
         "a, x", [
@@ -180,51 +181,6 @@ class TestUnitSequence:
             (UnitSequence(), 1, UnitSequence()),
             (1, UnitSequence(), UnitSequence()),
 
-            (UnitSequence(SECOND), UnitSequence(SECOND), UnitSequence(SECOND)),
-            (UnitSequence(SECOND), 1, UnitSequence()),
-            (1, UnitSequence(SECOND), UnitSequence()),
-
-            (0, UnitSequence(), 0),
-            (0, UnitSequence(SECOND), 0),
-
-            (UnitSequence(AMPERE, SECOND), UnitSequence(AMPERE), UnitSequence(AMPERE)),
-            (UnitSequence(AMPERE, SECOND), UnitSequence(SECOND), UnitSequence(SECOND)),
-            (UnitSequence(METER, METER), UnitSequence(METER), UnitSequence(METER)),
-            (UnitSequence(METER, METER, METER), UnitSequence(METER), UnitSequence(METER)),
-            (UnitSequence(METER, METER, METER),
-             UnitSequence(METER, METER),
-             UnitSequence(METER, METER)),
-
-            (UnitSequence(GRAM, METER), UnitSequence(SECOND, SECOND), UnitSequence()),
-            (UnitSequence(GRAM, METER),
-             UnitSequence(METER, METER, SECOND, SECOND),
-             UnitSequence(METER))
-        ]
-    )
-    def test_floordiv(
-            self,
-            a: typing.Union[UnitSequence, int, float],
-            b: typing.Union[UnitSequence, int, float],
-            x: typing.Optional[UnitSequence]
-    ):
-        """
-
-        :param a:
-        :param b:
-        :param x:
-        """
-        if x is None:
-            with pytest.raises(TypeError):
-                _ = a // b, (a, b, x)
-        else:
-            assert a // b == x, (a, b, x)
-
-    @pytest.mark.parametrize(
-        "a, b, x", [
-            (UnitSequence(), UnitSequence(), UnitSequence()),
-            (UnitSequence(), 1, UnitSequence()),
-            (1, UnitSequence(), UnitSequence()),
-
             (UnitSequence(SECOND), UnitSequence(SECOND), UnitSequence()),
             (UnitSequence(SECOND), 1, UnitSequence(SECOND)),
             (1, UnitSequence(SECOND), UnitSequence(SECOND)),
@@ -244,7 +200,7 @@ class TestUnitSequence:
              UnitSequence(GRAM))
         ]
     )
-    def test_mod(
+    def test_truediv(
             self,
             a: typing.Union[UnitSequence, int, float],
             b: typing.Union[UnitSequence, int, float],
@@ -258,9 +214,9 @@ class TestUnitSequence:
         """
         if x is None:
             with pytest.raises(TypeError):
-                _ = a % b, (a, b, x)
+                _ = a / b, (a, b, x)
         else:
-            assert a % b == x, (a, b, x)
+            assert a / b == x, (a, b, x)
 
     @pytest.mark.parametrize(
         "a, n, x", [
@@ -291,3 +247,27 @@ class TestUnitSequence:
                     _ = a ** n, (a, n, x)
         else:
             assert a ** n == x, (a, n, x)
+
+
+class TestUnit:
+    """
+
+    """
+
+    @pytest.mark.parametrize(
+        "a, b, x", [
+
+        ]
+    )
+    def test_eq(self, a: Unit, b: Unit, x: typing.Optional[bool]):
+        """
+
+        :param a:
+        :param b:
+        :param x:
+        :return:
+        """
+        if x is None:
+            with pytest.raises(TypeError):
+                _ = a == b, (a, b, x)
+        assert a == b is x, (a, b, x)
