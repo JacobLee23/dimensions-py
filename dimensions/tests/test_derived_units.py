@@ -10,60 +10,41 @@ from dimensions.base_units import (
     SECOND, METER, GRAM, AMPERE, KELVIN, MOLE, CANDELA
 )
 from dimensions import derived_units
+from dimensions.derived_units import UnitSequence
 
 
 class TestUnitSequence:
     """
-    Unit tests for :py:class:`derived_units.UnitSequence`.
+    Unit tests for :py:class:`UnitSequence`.
     """
     @pytest.mark.parametrize(
         "a, b, eq", [
-            (derived_units.UnitSequence(), 1, True),
-            (derived_units.UnitSequence(), 1.0, True),
-            (1, derived_units.UnitSequence(), True),
-            (1.0, derived_units.UnitSequence(), True),
+            (UnitSequence(), 1, True),
+            (UnitSequence(), 1.0, True),
+            (1, UnitSequence(), True),
+            (1.0, UnitSequence(), True),
 
-            (derived_units.UnitSequence(SECOND),
-             derived_units.UnitSequence(SECOND),
-             True),
-            (derived_units.UnitSequence(METER),
-             derived_units.UnitSequence(METER),
-             True),
-            (derived_units.UnitSequence(GRAM),
-             derived_units.UnitSequence(GRAM),
-             True),
-            (derived_units.UnitSequence(AMPERE),
-             derived_units.UnitSequence(AMPERE),
-             True),
-            (derived_units.UnitSequence(KELVIN),
-             derived_units.UnitSequence(KELVIN),
-             True),
-            (derived_units.UnitSequence(MOLE),
-             derived_units.UnitSequence(MOLE),
-             True),
-            (derived_units.UnitSequence(CANDELA),
-             derived_units.UnitSequence(CANDELA),
-             True),
+            (UnitSequence(SECOND), UnitSequence(SECOND), True),
+            (UnitSequence(METER), UnitSequence(METER), True),
+            (UnitSequence(GRAM), UnitSequence(GRAM), True),
+            (UnitSequence(AMPERE), UnitSequence(AMPERE), True),
+            (UnitSequence(KELVIN), UnitSequence(KELVIN), True),
+            (UnitSequence(MOLE), UnitSequence(MOLE), True),
+            (UnitSequence(CANDELA), UnitSequence(CANDELA), True),
 
-            (derived_units.UnitSequence(METER, METER),
-             derived_units.UnitSequence(METER, METER),
-             True),
-            (derived_units.UnitSequence(METER, METER, METER),
-             derived_units.UnitSequence(METER, METER, METER),
-             True),
-            (derived_units.UnitSequence(SECOND, AMPERE),
-             (derived_units.UnitSequence(AMPERE, SECOND)),
-             True),
+            (UnitSequence(METER, METER), UnitSequence(METER, METER), True),
+            (UnitSequence(METER, METER, METER), UnitSequence(METER, METER, METER), True),
+            (UnitSequence(SECOND, AMPERE), UnitSequence(AMPERE, SECOND), True),
 
-            (derived_units.UnitSequence(METER, derived_units.UnitSequence(METER, METER)),
-             derived_units.UnitSequence(derived_units.UnitSequence(METER, METER), METER),
+            (UnitSequence(METER, UnitSequence(METER, METER)),
+             UnitSequence(UnitSequence(METER, METER), METER),
              True)
         ]
     )
     def test_eq(
             self,
-            a: derived_units.UnitSequence,
-            b: derived_units.UnitSequence,
+            a: typing.Union[UnitSequence, int, float],
+            b: typing.Union[UnitSequence, int, float],
             eq: typing.Optional[bool]
     ):
         """
@@ -82,17 +63,17 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, x", [
-            (derived_units.UnitSequence(), False),
-            (derived_units.UnitSequence(SECOND), True),
-            (derived_units.UnitSequence(METER), True),
-            (derived_units.UnitSequence(GRAM), True),
-            (derived_units.UnitSequence(AMPERE), True),
-            (derived_units.UnitSequence(KELVIN), True),
-            (derived_units.UnitSequence(MOLE), True),
-            (derived_units.UnitSequence(CANDELA), True),
+            (UnitSequence(), False),
+            (UnitSequence(SECOND), True),
+            (UnitSequence(METER), True),
+            (UnitSequence(GRAM), True),
+            (UnitSequence(AMPERE), True),
+            (UnitSequence(KELVIN), True),
+            (UnitSequence(MOLE), True),
+            (UnitSequence(CANDELA), True),
         ]
     )
-    def test_bool(self, a: derived_units.UnitSequence, x: bool):
+    def test_bool(self, a: UnitSequence, x: bool):
         """
 
         :param a:
@@ -102,13 +83,13 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, x", [
-            (derived_units.UnitSequence(), 0),
-            (derived_units.UnitSequence(SECOND), 1),
-            (derived_units.UnitSequence(AMPERE, SECOND), 2),
-            (derived_units.UnitSequence(METER, METER, METER), 3),
+            (UnitSequence(), 0),
+            (UnitSequence(SECOND), 1),
+            (UnitSequence(AMPERE, SECOND), 2),
+            (UnitSequence(METER, METER, METER), 3),
         ]
     )
-    def test_len(self, a: derived_units.UnitSequence, x: int):
+    def test_len(self, a: UnitSequence, x: int):
         """
 
         :param a:
@@ -118,13 +99,13 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a", [
-            derived_units.UnitSequence(),
-            derived_units.UnitSequence(SECOND),
-            derived_units.UnitSequence(AMPERE, SECOND),
-            derived_units.UnitSequence(METER, METER, METER),
+            UnitSequence(),
+            UnitSequence(SECOND),
+            UnitSequence(AMPERE, SECOND),
+            UnitSequence(METER, METER, METER),
         ]
     )
-    def test_getitem(self, a: derived_units.UnitSequence):
+    def test_getitem(self, a: UnitSequence):
         """
 
         :param a:
@@ -134,13 +115,13 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a", [
-            derived_units.UnitSequence(),
-            derived_units.UnitSequence(SECOND),
-            derived_units.UnitSequence(AMPERE, SECOND),
-            derived_units.UnitSequence(METER, METER, METER),
+            UnitSequence(),
+            UnitSequence(SECOND),
+            UnitSequence(AMPERE, SECOND),
+            UnitSequence(METER, METER, METER),
         ]
     )
-    def test_contains(self, a: derived_units.UnitSequence):
+    def test_contains(self, a: UnitSequence):
         """
 
         :param a:
@@ -150,43 +131,33 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, b, x", [
-            (derived_units.UnitSequence(), 0, 0),
-            (derived_units.UnitSequence(), 0.0, 0),
-            (0, derived_units.UnitSequence(), 0),
-            (0.0, derived_units.UnitSequence(), 0),
+            (UnitSequence(), 0, 0),
+            (UnitSequence(), 0.0, 0),
+            (0, UnitSequence(), 0),
+            (0.0, UnitSequence(), 0),
 
-            (derived_units.UnitSequence(), 1, derived_units.UnitSequence()),
-            (derived_units.UnitSequence(), 1.0, derived_units.UnitSequence()),
-            (derived_units.UnitSequence(SECOND), 1, derived_units.UnitSequence(SECOND)),
-            (derived_units.UnitSequence(SECOND), 1.0, derived_units.UnitSequence(SECOND)),
-            (1, derived_units.UnitSequence(), derived_units.UnitSequence()),
-            (1.0, derived_units.UnitSequence(), derived_units.UnitSequence()),
-            (1, derived_units.UnitSequence(SECOND), derived_units.UnitSequence(SECOND)),
-            (1.0, derived_units.UnitSequence(SECOND), derived_units.UnitSequence(SECOND)),
-            (derived_units.UnitSequence(), derived_units.UnitSequence(), derived_units.UnitSequence()),
-            (derived_units.UnitSequence(),
-             derived_units.UnitSequence(SECOND),
-             derived_units.UnitSequence(SECOND)),
-            (derived_units.UnitSequence(SECOND),
-             derived_units.UnitSequence(),
-             derived_units.UnitSequence(SECOND)),
+            (UnitSequence(), 1, UnitSequence()),
+            (UnitSequence(), 1.0, UnitSequence()),
+            (UnitSequence(SECOND), 1, UnitSequence(SECOND)),
+            (UnitSequence(SECOND), 1.0, UnitSequence(SECOND)),
+            (1, UnitSequence(), UnitSequence()),
+            (1.0, UnitSequence(), UnitSequence()),
+            (1, UnitSequence(SECOND), UnitSequence(SECOND)),
+            (1.0, UnitSequence(SECOND), UnitSequence(SECOND)),
+            (UnitSequence(), UnitSequence(), UnitSequence()),
+            (UnitSequence(), UnitSequence(SECOND), UnitSequence(SECOND)),
+            (UnitSequence(SECOND), UnitSequence(), UnitSequence(SECOND)),
 
-            (derived_units.UnitSequence(METER),
-             derived_units.UnitSequence(METER),
-             derived_units.UnitSequence(METER, METER)),
-            (derived_units.UnitSequence(AMPERE),
-             derived_units.UnitSequence(SECOND),
-             derived_units.UnitSequence(AMPERE, SECOND)),
-            (derived_units.UnitSequence(AMPERE),
-             derived_units.UnitSequence(SECOND),
-             derived_units.UnitSequence(SECOND, AMPERE)),
+            (UnitSequence(METER), UnitSequence(METER), UnitSequence(METER, METER)),
+            (UnitSequence(AMPERE), UnitSequence(SECOND), UnitSequence(AMPERE, SECOND)),
+            (UnitSequence(AMPERE), UnitSequence(SECOND), UnitSequence(SECOND, AMPERE)),
         ]
     )
     def test_mul(
             self,
-            a: typing.Union[derived_units.UnitSequence, int, float],
-            b: typing.Union[derived_units.UnitSequence, int, float],
-            x: typing.Optional[derived_units.UnitSequence]
+            a: typing.Union[UnitSequence, int, float],
+            b: typing.Union[UnitSequence, int, float],
+            x: typing.Optional[UnitSequence]
     ):
         """
 
@@ -198,21 +169,43 @@ class TestUnitSequence:
             with pytest.raises(TypeError):
                 _ = a * b, (a, b, x)
         else:
-            if isinstance(b, derived_units.UnitSequence):
+            if isinstance(b, UnitSequence):
                 assert a * b == b * a == x, (a, b, x)
             else:
                 assert a * b == x, (a, b, x)
 
     @pytest.mark.parametrize(
         "a, b, x", [
+            (UnitSequence(), UnitSequence(), UnitSequence()),
+            (UnitSequence(), 1, UnitSequence()),
+            (1, UnitSequence(), UnitSequence()),
 
+            (UnitSequence(SECOND), UnitSequence(SECOND), UnitSequence(SECOND)),
+            (UnitSequence(SECOND), 1, UnitSequence()),
+            (1, UnitSequence(SECOND), UnitSequence()),
+
+            (0, UnitSequence(), 0),
+            (0, UnitSequence(SECOND), 0),
+
+            (UnitSequence(AMPERE, SECOND), UnitSequence(AMPERE), UnitSequence(AMPERE)),
+            (UnitSequence(AMPERE, SECOND), UnitSequence(SECOND), UnitSequence(SECOND)),
+            (UnitSequence(METER, METER), UnitSequence(METER), UnitSequence(METER)),
+            (UnitSequence(METER, METER, METER), UnitSequence(METER), UnitSequence(METER)),
+            (UnitSequence(METER, METER, METER),
+             UnitSequence(METER, METER),
+             UnitSequence(METER, METER)),
+
+            (UnitSequence(GRAM, METER), UnitSequence(SECOND, SECOND), UnitSequence()),
+            (UnitSequence(GRAM, METER),
+             UnitSequence(METER, METER, SECOND, SECOND),
+             UnitSequence(METER))
         ]
     )
     def test_floordiv(
             self,
-            a: typing.Union[derived_units.UnitSequence, int, float],
-            b: typing.Union[derived_units.UnitSequence, int, float],
-            x: typing.Optional[derived_units.UnitSequence]
+            a: typing.Union[UnitSequence, int, float],
+            b: typing.Union[UnitSequence, int, float],
+            x: typing.Optional[UnitSequence]
     ):
         """
 
@@ -228,14 +221,34 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, b, x", [
+            (UnitSequence(), UnitSequence(), UnitSequence()),
+            (UnitSequence(), 1, UnitSequence()),
+            (1, UnitSequence(), UnitSequence()),
 
+            (UnitSequence(SECOND), UnitSequence(SECOND), UnitSequence()),
+            (UnitSequence(SECOND), 1, UnitSequence(SECOND)),
+            (1, UnitSequence(SECOND), UnitSequence(SECOND)),
+
+            (0, UnitSequence(), 0),
+            (0, UnitSequence(SECOND), 0),
+
+            (UnitSequence(AMPERE, SECOND), UnitSequence(AMPERE), UnitSequence(SECOND)),
+            (UnitSequence(AMPERE, SECOND), UnitSequence(SECOND), UnitSequence(AMPERE)),
+            (UnitSequence(METER, METER), UnitSequence(METER), UnitSequence(METER)),
+            (UnitSequence(METER, METER, METER), UnitSequence(METER), UnitSequence(METER, METER)),
+            (UnitSequence(METER, METER, METER), UnitSequence(METER, METER), UnitSequence(METER)),
+
+            (UnitSequence(GRAM, METER), UnitSequence(SECOND, SECOND), UnitSequence(GRAM, METER)),
+            (UnitSequence(GRAM, METER),
+             UnitSequence(METER, METER, SECOND, SECOND),
+             UnitSequence(GRAM))
         ]
     )
     def test_mod(
             self,
-            a: typing.Union[derived_units.UnitSequence, int, float],
-            b: typing.Union[derived_units.UnitSequence, int, float],
-            x: typing.Optional[derived_units.UnitSequence]
+            a: typing.Union[UnitSequence, int, float],
+            b: typing.Union[UnitSequence, int, float],
+            x: typing.Optional[UnitSequence]
     ):
         """
 
@@ -251,25 +264,18 @@ class TestUnitSequence:
 
     @pytest.mark.parametrize(
         "a, n, x", [
-            (derived_units.UnitSequence(), -1, None),
-            (derived_units.UnitSequence(), 0, derived_units.UnitSequence()),
-            (derived_units.UnitSequence(), 1, derived_units.UnitSequence()),
-            (derived_units.UnitSequence(), 2, derived_units.UnitSequence()),
+            (UnitSequence(), -1, None),
+            (UnitSequence(), 0, UnitSequence()),
+            (UnitSequence(), 1, UnitSequence()),
+            (UnitSequence(), 2, UnitSequence()),
 
-            (derived_units.UnitSequence(METER), 0, derived_units.UnitSequence()),
-            (derived_units.UnitSequence(METER), 1, derived_units.UnitSequence(METER)),
-            (derived_units.UnitSequence(METER), 2, derived_units.UnitSequence(METER, METER)),
-            (derived_units.UnitSequence(METER),
-             3,
-             derived_units.UnitSequence(METER, METER, METER)),
+            (UnitSequence(METER), 0, UnitSequence()),
+            (UnitSequence(METER), 1, UnitSequence(METER)),
+            (UnitSequence(METER), 2, UnitSequence(METER, METER)),
+            (UnitSequence(METER), 3, UnitSequence(METER, METER, METER)),
         ]
     )
-    def test_pow(
-            self,
-            a: derived_units.UnitSequence,
-            n: int,
-            x: typing.Optional[derived_units.UnitSequence]
-    ):
+    def test_pow(self, a: UnitSequence, n: int, x: typing.Optional[UnitSequence]):
         """
 
         :param a:

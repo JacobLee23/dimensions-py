@@ -91,10 +91,36 @@ class UnitSequence:
         :raise ValueError:
         """
         if isinstance(other, type(self)):
-            raise type(self)(*filter(lambda x: x in other.sequence, self.sequence))
+            seqa, seqb = self.sequence.copy(), other.sequence.copy()
+            sequence = []
+            for i, unita in enumerate(seqa):
+                for j, unitb in enumerate(seqb):
+                    if unita == unitb:
+                        sequence.append(unita)
+                        del seqa[i], seqb[j]
+            return type(self)(*sequence)
         elif isinstance(other, (int, float)):
             if other == 1:
-                return type(self)(*self.sequence)
+                return type(self)()
+            else:
+                raise ValueError
+        else:
+            raise TypeError
+
+    def __rfloordiv__(self, other):
+        """
+        :type other: UnitSequence | int | float
+        :rtype: UnitSequence
+        :raise TypeError:
+        :raise ValueError:
+        """
+        if isinstance(other, type(self)):
+            return other // self
+        elif isinstance(other, (int, float)):
+            if other == 0:
+                return 0
+            elif other == 1:
+                return type(self)()
             else:
                 raise ValueError
         else:
@@ -107,10 +133,34 @@ class UnitSequence:
         :raise TypeError:
         """
         if isinstance(other, type(self)):
-            return type(self)(*filter(lambda x: x not in other.sequence, self.sequence))
+            seqa, seqb = self.sequence.copy(), other.sequence.copy()
+            for i, unita in enumerate(seqa):
+                for j, unitb in enumerate(seqb):
+                    if unita == unitb:
+                        del seqa[i], seqb[j]
+                        continue
+            return type(self)(*seqa)
         elif isinstance(other, (int, float)):
             if other == 1:
-                return type(self)()
+                return type(self)(*self.sequence)
+            else:
+                raise ValueError
+        else:
+            raise TypeError
+
+    def __rmod__(self, other):
+        """
+        :type other: UnitSequence
+        :rtype: UnitSequence
+        :raise TypeError:
+        """
+        if isinstance(other, type(self)):
+            return other % self
+        elif isinstance(other, (int, float)):
+            if other == 0:
+                return 0
+            elif other == 1:
+                return type(self)(*self.sequence)
             else:
                 raise ValueError
         else:
