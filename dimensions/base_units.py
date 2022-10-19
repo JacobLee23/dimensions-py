@@ -42,7 +42,7 @@ class BaseUnit:
         :type other: BaseUnit
         :raise TypeError:
         """
-        if not issubclass(type(other), BaseUnit):
+        if not isinstance(other, BaseUnit):
             raise TypeError
 
         return type(self) == type(other)
@@ -70,21 +70,13 @@ class BaseUnit:
         def __init__(self):
             cls.__init__(self, *args, **kwargs)
 
-        return type(name, (cls,), {"__init__": __init__})
+        return type(name, (cls,), {"__init__": __init__})()
 
 
-Second = BaseUnit.factory("Second", "second", "s")
-Meter = BaseUnit.factory("Meter", "meter", "m")
-Gram = BaseUnit.factory("Gram", "gram", "g")
-Ampere = BaseUnit.factory("Ampere", "ampere", "A")
-Kelvin = BaseUnit.factory("Kelvin", "kelvin", "K")
-Mole = BaseUnit.factory("Mole", "mole", "mol")
-Candela = BaseUnit.factory("Candela", "candela", "cd")
-
-SECOND = Second()
-METER = Meter()
-GRAM = Gram()
-AMPERE = Ampere()
-KELVIN = Kelvin()
-MOLE = Mole()
-CANDELA = Candela()
+SECOND = BaseUnit.factory("Second", "second", "s")
+METER = BaseUnit.factory("Meter", "meter", "m")
+GRAM = BaseUnit.factory("Gram", "gram", "g")
+AMPERE = BaseUnit.factory("Ampere", "ampere", "A")
+KELVIN = BaseUnit.factory("Kelvin", "kelvin", "K")
+MOLE = BaseUnit.factory("Mole", "mole", "mol")
+CANDELA = BaseUnit.factory("Candela", "candela", "cd")

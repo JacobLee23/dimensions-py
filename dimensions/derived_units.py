@@ -92,13 +92,13 @@ class UnitSequence:
         :raise TypeError:
         """
         if isinstance(other, type(self)):
-            seqa, seqb = self.sequence.copy(), other.sequence.copy()
-            for i, unita in enumerate(seqa):
-                for j, unitb in enumerate(seqb):
-                    if unita == unitb:
-                        del seqa[i], seqb[j]
-                        continue
-            return type(self)(*seqa)
+            sequence = list(self.sequence)
+            for unit in other.sequence:
+                try:
+                    sequence.remove(unit)
+                except ValueError:
+                    pass
+            return type(self)(*sequence)
         elif isinstance(other, (int, float)):
             if other == 1:
                 return type(self)(*self.sequence)
@@ -341,34 +341,48 @@ class Unit:
     def factory(cls, name: str, *args, **kwargs):
         """
 
+        :param name:
+        :param args:
+        :param kwargs:
         :return:
         """
-
         def __init__(self):
             cls.__init__(self, *args, **kwargs)
 
-        return type(name, (cls,), {"__init__": __init__})
+        return type(name, (cls,), {"__init__": __init__})()
 
 
-Hertz = Unit.factory("Hertz", [], [SECOND], "Hertz", "Hz")
-Radian = Unit.factory("Radian", [METER], [METER], "radian", "rad")
-Steradian = Unit.factory("Steradian", [METER, METER], [METER, METER], "steradian", "sr")
-Newton = Unit.factory("Newton", [GRAM, METER], [SECOND, SECOND], "newton", "N")     # TODO: g -> kg
-Pascal = Unit.factory("Newton", [Newton()], [METER, METER], "pascal", "Pa")
-Joule = Unit.factory("Joule", [METER, Newton()], [], "joule", "J")
-Watt = Unit.factory("Watt", [Joule()], [SECOND], "watt", "W")
-Coulomb = Unit.factory("Coulomb", [SECOND, AMPERE], [], "coulomb", "C")
-Volt = Unit.factory("Volt", [Watt()], [AMPERE], "volt", "V")
-Farad = Unit.factory("Farad", [Coulomb()], [Volt()], "farad", "F")
-Ohm = Unit.factory("Ohm", [Volt()], [AMPERE], "ohm", "Ω")
-Siemens = Unit.factory("Siemens", [], [Ohm()], "siemens", "S")
-Weber = Unit.factory("Weber", [Joule()], [AMPERE], "weber", "Wb")
-Tesla = Unit.factory("Tesla", [Volt(), SECOND], [METER, METER], "tesla", "T")
-Henry = Unit.factory("Henry", [Volt(), SECOND], [AMPERE], "henry", "H")
-Celsius = Unit.factory("Celsius", [KELVIN], [], "celsius", "°C")
-Lumen = Unit.factory("Lumen", [CANDELA, Steradian()], [], "lumen", "lm")
-Lux = Unit.factory("Lux", [Lumen()], [METER, METER], "lux", "lx")
-Becquerel = Unit.factory("Becquerel", [], [SECOND], "becquerel", "Bq")
-Gray = Unit.factory("Gray", [Joule()], [GRAM], "gray", "Gy")        # TODO: g -> kg
-Sievert = Unit.factory("Sievert", [Joule()], [GRAM], "sievert", "Sv")       # TODO: g -> kg
-Katal = Unit.factory("Katal", [MOLE], [SECOND], "katal", "kat")
+# SI Base Units
+Second = Unit.factory("Second", [SECOND], [], "second", "s")
+Meter = Unit.factory("Meter", [METER], [], "meter", "m")
+Gram = Unit.factory("Gram", [GRAM], [], "gram", "g")
+Ampere = Unit.factory("Ampere", [AMPERE], [], "ampere", "A")
+Kelvin = Unit.factory("Kelvin", [KELVIN], [], "kelvin", "K")
+Mole = Unit.factory("Mole", [MOLE], [], "mole", "mol")
+Candela = Unit.factory("Candela", [CANDELA], [], "candela", "cd")
+
+
+# Named SI Derived Units
+# TODO: Newton, Gray, Sievert: g -> kg
+Hertz = Unit.factory("Hertz", [], [Second], "Hertz", "Hz")
+Radian = Unit.factory("Radian", [Meter], [Meter], "radian", "rad")
+Steradian = Unit.factory("Steradian", [Meter, Meter], [Meter, Meter], "steradian", "sr")
+Newton = Unit.factory("Newton", [Gram, Meter], [Second, Second], "newton", "N")
+Pascal = Unit.factory("Newton", [Newton], [Meter, Meter], "pascal", "Pa")
+Joule = Unit.factory("Joule", [Meter, Newton], [], "joule", "J")
+Watt = Unit.factory("Watt", [Joule], [Second], "watt", "W")
+Coulomb = Unit.factory("Coulomb", [Second, Ampere], [], "coulomb", "C")
+Volt = Unit.factory("Volt", [Watt], [Ampere], "volt", "V")
+Farad = Unit.factory("Farad", [Coulomb], [Volt], "farad", "F")
+Ohm = Unit.factory("Ohm", [Volt], [Ampere], "ohm", "Ω")
+Siemens = Unit.factory("Siemens", [], [Ohm], "siemens", "S")
+Weber = Unit.factory("Weber", [Joule], [Ampere], "weber", "Wb")
+Tesla = Unit.factory("Tesla", [Volt, Second], [Meter, Meter], "tesla", "T")
+Henry = Unit.factory("Henry", [Volt, Second], [Ampere], "henry", "H")
+Celsius = Unit.factory("Celsius", [Kelvin], [], "celsius", "°C")
+Lumen = Unit.factory("Lumen", [Candela, Steradian], [], "lumen", "lm")
+Lux = Unit.factory("Lux", [Lumen], [Meter, Meter], "lux", "lx")
+Becquerel = Unit.factory("Becquerel", [], [Second], "becquerel", "Bq")
+Gray = Unit.factory("Gray", [Joule], [Gram], "gray", "Gy")
+Sievert = Unit.factory("Sievert", [Joule], [Gram], "sievert", "Sv")
+Katal = Unit.factory("Katal", [Mole], [Second], "katal", "kat")
